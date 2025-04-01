@@ -1,25 +1,22 @@
 package com.kimbob.multiplication.domain;
 
-import lombok.Getter;
-import lombok.ToString;
+import lombok.*;
 
 /**
  * 애플리케이션에서 곱셈을 나타내는 클래스
  */
 @Getter
 @ToString
+@EqualsAndHashCode
+@RequiredArgsConstructor
 public class Multiplication {
 
     // 인수
-    private int factorA;
-    private int factorB;
+    private final int factorA;
+    private final int factorB;
 
-    // A * B의 결과
-    private int result;
-
-    public Multiplication(int factorA, int factorB) {
-        this.factorA = factorA;
-        this.factorB = factorB;
-        this.result = factorA * factorB;
+    // 기본 생성자
+    Multiplication() {
+        this(0, 0);
     }
 }
