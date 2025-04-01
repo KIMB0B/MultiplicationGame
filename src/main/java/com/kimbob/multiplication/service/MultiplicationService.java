@@ -1,6 +1,7 @@
 package com.kimbob.multiplication.service;
 
 import com.kimbob.multiplication.domain.Multiplication;
+import com.kimbob.multiplication.domain.MultiplicationResultAttempt;
 
 public interface MultiplicationService {
 
@@ -11,4 +12,9 @@ public interface MultiplicationService {
      * @return 두 개의 무작위 인수를 담은 {@link Multiplication} 객체
      */
     Multiplication createMultiplication();
+
+    /**
+     * @return 곱셈 계산 결과가 맞으면 true, 아니면 false
+     */
+    boolean checkAttempt(MultiplicationResultAttempt resultAttempt);
 }

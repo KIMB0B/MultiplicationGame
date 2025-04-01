@@ -1,14 +1,12 @@
 package com.kimbob.multiplication.service;
 
 import com.kimbob.multiplication.domain.Multiplication;
-import lombok.RequiredArgsConstructor;
-import org.junit.jupiter.api.BeforeAll;
+import com.kimbob.multiplication.domain.MultiplicationResultAttempt;
+import com.kimbob.multiplication.domain.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
@@ -34,6 +32,27 @@ class MultiplicationServiceTest {
 
         assertThat(multiplication.getFactorA()).isEqualTo(50);
         assertThat(multiplication.getFactorB()).isEqualTo(30);
-        assertThat(multiplication.getResult()).isEqualTo(1500);
+    }
+
+    @Test
+    void checkCorrectAttemptTest() {
+        Multiplication multiplication = new Multiplication(50, 60);
+        User user = new User("John_doe");
+        MultiplicationResultAttempt attempt = new MultiplicationResultAttempt(user, multiplication, 3000);
+
+        boolean isCorrect = multiplicationService.checkAttempt(attempt);
+
+        assertThat(isCorrect).isTrue();
+    }
+
+    @Test
+    void checkWrongAttemptTest() {
+        Multiplication multiplication = new Multiplication(50, 60);
+        User user = new User("John_doe");
+        MultiplicationResultAttempt attempt = new MultiplicationResultAttempt(user, multiplication, 3010);
+
+        boolean isCorrect = multiplicationService.checkAttempt(attempt);
+
+        assertThat(isCorrect).isFalse();
     }
 }
