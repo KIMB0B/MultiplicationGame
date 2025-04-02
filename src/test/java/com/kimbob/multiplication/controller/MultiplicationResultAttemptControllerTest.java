@@ -2,6 +2,9 @@ package com.kimbob.multiplication.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kimbob.multiplication.domain.Multiplication;
+import com.kimbob.multiplication.domain.MultiplicationResultAttempt;
+import com.kimbob.multiplication.domain.ResultResponse;
+import com.kimbob.multiplication.domain.User;
 import com.kimbob.multiplication.service.MultiplicationService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,12 +20,13 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
-@WebMvcTest(MultiplicationController.class)
-@Import(MultiplicationControllerTest.TestConfig.class)
-class MultiplicationControllerTest {
+@WebMvcTest(MultiplicationResultAttemptController.class)
+@Import(MultiplicationResultAttemptControllerTest.TestConfig.class)
+class MultiplicationResultAttemptControllerTest {
 
     @Autowired
     private MultiplicationService multiplicationService;
@@ -30,7 +34,8 @@ class MultiplicationControllerTest {
     @Autowired
     private MockMvc mvc;
 
-    private JacksonTester<Multiplication> json;
+    private JacksonTester<MultiplicationResultAttempt> jsonResult;
+    private JacksonTester<ResultResponse> jsonResponse;
 
     @BeforeEach
     void setUp() {
@@ -38,18 +43,33 @@ class MultiplicationControllerTest {
     }
 
     @Test
-    public void getRandomMultiplicationTest() throws Exception {
+    public void postResultReturnCorrect() throws Exception {
+        genericParameterizedTest(true);
+    }
 
-        when(multiplicationService.createMultiplication()).thenReturn(new Multiplication(70, 20));
+    @Test
+    public void postResultReturnIncorrect() throws Exception {
+        genericParameterizedTest(false);
+    }
+
+    void genericParameterizedTest(boolean correct) throws Exception {
+        when(multiplicationService
+                .checkAttempt(any(MultiplicationResultAttempt.class))
+        ).thenReturn(correct);
+
+        User user = new User("John_doe");
+        Multiplication multiplication = new Multiplication(50, 70);
+        MultiplicationResultAttempt attempt = new MultiplicationResultAttempt(user, multiplication, 3500);
 
         MockHttpServletResponse response = mvc.perform(
-                get("/multiplications/random")
-                        .accept(MediaType.APPLICATION_JSON)
-        ).andReturn().getResponse();
+                post("/results")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonResult.write(attempt).getJson()))
+                .andReturn().getResponse();
 
         assertThat(response.getStatus()).isEqualTo(200);
         assertThat(response.getContentAsString())
-                .isEqualTo(json.write(new Multiplication(70, 20)).getJson());
+                .isEqualTo(jsonResponse.write(new ResultResponse(correct)).getJson());
     }
 
     @TestConfiguration

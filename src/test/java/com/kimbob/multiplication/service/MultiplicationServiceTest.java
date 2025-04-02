@@ -9,14 +9,14 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
-import org.springframework.test.context.ContextConfiguration;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = TestConfig.class)
+@Import(MultiplicationServiceTest.TestConfig.class)
 class MultiplicationServiceTest {
 
     @Autowired
@@ -56,18 +56,18 @@ class MultiplicationServiceTest {
 
         assertThat(isCorrect).isFalse();
     }
-}
 
-@TestConfiguration
-class TestConfig {
+    @TestConfiguration
+    static class TestConfig {
 
-    @Bean
-    public RandomGeneratorService randomGeneratorService() {
-        return Mockito.mock(RandomGeneratorService.class);
-    }
+        @Bean
+        public RandomGeneratorService randomGeneratorService() {
+            return Mockito.mock(RandomGeneratorService.class);
+        }
 
-    @Bean
-    public MultiplicationService multiplicationService(RandomGeneratorService randomGeneratorService) {
-        return new MultiplicationServiceImpl(randomGeneratorService);
+        @Bean
+        public MultiplicationService multiplicationService(RandomGeneratorService randomGeneratorService) {
+            return new MultiplicationServiceImpl(randomGeneratorService);
+        }
     }
 }
