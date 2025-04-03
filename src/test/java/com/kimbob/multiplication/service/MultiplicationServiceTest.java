@@ -37,7 +37,7 @@ class MultiplicationServiceTest {
     void checkCorrectAttemptTest() {
         Multiplication multiplication = new Multiplication(50, 60);
         User user = new User("John_doe");
-        MultiplicationResultAttempt attempt = new MultiplicationResultAttempt(user, multiplication, 3000);
+        MultiplicationResultAttempt attempt = new MultiplicationResultAttempt(user, multiplication, 3000, true);
 
         boolean isCorrect = multiplicationService.checkAttempt(attempt);
 
@@ -48,7 +48,7 @@ class MultiplicationServiceTest {
     void checkWrongAttemptTest() {
         Multiplication multiplication = new Multiplication(50, 60);
         User user = new User("John_doe");
-        MultiplicationResultAttempt attempt = new MultiplicationResultAttempt(user, multiplication, 3010);
+        MultiplicationResultAttempt attempt = new MultiplicationResultAttempt(user, multiplication, 3010, false);
 
         boolean isCorrect = multiplicationService.checkAttempt(attempt);
 
