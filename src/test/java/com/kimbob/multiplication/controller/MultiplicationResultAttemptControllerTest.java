@@ -14,6 +14,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.json.JacksonTester;
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
@@ -33,7 +34,6 @@ class MultiplicationResultAttemptControllerTest {
     private MockMvc mvc;
 
     private JacksonTester<MultiplicationResultAttempt> jsonResult;
-    private JacksonTester<ResultResponse> jsonResponse;
 
     @BeforeEach
     void setUp() {
@@ -57,12 +57,7 @@ class MultiplicationResultAttemptControllerTest {
 
         User user = new User("John_doe");
         Multiplication multiplication = new Multiplication(50, 70);
-        MultiplicationResultAttempt attempt;
-        if (correct) {
-            attempt = new MultiplicationResultAttempt(user, multiplication, 3500, correct);
-        } else {
-            attempt = new MultiplicationResultAttempt(user, multiplication, 3510, correct);
-        }
+        MultiplicationResultAttempt attempt = new MultiplicationResultAttempt(user, multiplication, 3500, false);
 
         MockHttpServletResponse response = mvc.perform(
                 post("/results")
@@ -70,9 +65,16 @@ class MultiplicationResultAttemptControllerTest {
                         .content(jsonResult.write(attempt).getJson()))
                 .andReturn().getResponse();
 
-        assertThat(response.getStatus()).isEqualTo(200);
+        assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
         assertThat(response.getContentAsString())
-                .isEqualTo(jsonResponse.write(new ResultResponse(correct)).getJson());
+                .isEqualTo(jsonResult.write(
+                        new MultiplicationResultAttempt(
+                                attempt.getUser(),
+                                attempt.getMultiplication(),
+                                attempt.getResultAttempt(),
+                                correct
+                        )
+                ).getJson());
     }
 
     @TestConfiguration

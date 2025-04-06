@@ -4,6 +4,7 @@ import com.kimbob.multiplication.domain.Multiplication;
 import com.kimbob.multiplication.domain.MultiplicationResultAttempt;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 @Service
 @RequiredArgsConstructor
@@ -20,8 +21,19 @@ public class MultiplicationServiceImpl implements MultiplicationService {
 
     @Override
     public boolean checkAttempt(MultiplicationResultAttempt resultAttempt) {
-        return resultAttempt.getResultAttempt() ==
+        boolean correct = resultAttempt.getResultAttempt() ==
                 resultAttempt.getMultiplication().getFactorA() *
-                resultAttempt.getMultiplication().getFactorB();
+                        resultAttempt.getMultiplication().getFactorB();
+
+        Assert.isTrue(!resultAttempt.isCorrect(), "채점한 상태로 보낼 수 없습니다!");
+
+        MultiplicationResultAttempt checkedAttempt = new MultiplicationResultAttempt(
+                resultAttempt.getUser(),
+                resultAttempt.getMultiplication(),
+                resultAttempt.getResultAttempt(),
+                correct
+        );
+
+        return correct;
     }
 }
