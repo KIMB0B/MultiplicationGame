@@ -1,5 +1,9 @@
 package com.kimbob.multiplication.domain;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
 import lombok.*;
 
 /**
@@ -9,14 +13,20 @@ import lombok.*;
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor
+@Entity
 public class Multiplication {
+
+    @Id
+    @GeneratedValue
+    @Column(name = "MULTIPLICATION_ID")
+    private Long id;
 
     // 인수
     private final int factorA;
     private final int factorB;
 
     // 기본 생성자
-    Multiplication() {
+    protected Multiplication() {
         this(0, 0);
     }
 }

@@ -1,5 +1,9 @@
 package com.kimbob.multiplication.domain;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -12,12 +16,18 @@ import lombok.ToString;
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor
+@Entity
 public class User {
+
+    @Id
+    @GeneratedValue
+    @Column(name = "USER_ID")
+    private Long id;
 
     private final String alias;
 
     // 기본 생성자
-    User() {
+    protected User() {
         alias = "";
     }
 }

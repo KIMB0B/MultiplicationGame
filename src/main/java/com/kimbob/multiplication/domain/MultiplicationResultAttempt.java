@@ -1,5 +1,6 @@
 package com.kimbob.multiplication.domain;
 
+import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -12,15 +13,26 @@ import lombok.ToString;
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor
+@Entity
 public class MultiplicationResultAttempt {
 
+    @Id
+    @GeneratedValue
+    private Long id;
+
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "USER_ID")
     private final User user;
+
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "MULTIPLICATION_ID")
     private final Multiplication multiplication;
+
     private final int resultAttempt;
     private final boolean correct;
 
     // 기본 생성자
-    MultiplicationResultAttempt() {
+    protected MultiplicationResultAttempt() {
         user = null;
         multiplication = null;
         resultAttempt = -1;
