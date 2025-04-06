@@ -3,7 +3,6 @@ package com.kimbob.multiplication.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kimbob.multiplication.domain.Multiplication;
 import com.kimbob.multiplication.domain.MultiplicationResultAttempt;
-import com.kimbob.multiplication.domain.ResultResponse;
 import com.kimbob.multiplication.domain.User;
 import com.kimbob.multiplication.service.MultiplicationService;
 import org.junit.jupiter.api.BeforeEach;
