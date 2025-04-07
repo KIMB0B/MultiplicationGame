@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -50,5 +51,10 @@ public class MultiplicationServiceImpl implements MultiplicationService {
         attemptRepository.save(checkedAttempt);
 
         return correct;
+    }
+
+    @Override
+    public List<MultiplicationResultAttempt> getStatsForUser(String userAlias) {
+        return attemptRepository.findTop5ByUserAliasOrderByIdDesc(userAlias);
     }
 }

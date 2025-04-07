@@ -3,6 +3,8 @@ package com.kimbob.multiplication.service;
 import com.kimbob.multiplication.domain.Multiplication;
 import com.kimbob.multiplication.domain.MultiplicationResultAttempt;
 
+import java.util.List;
+
 public interface MultiplicationService {
 
     /**
@@ -17,4 +19,9 @@ public interface MultiplicationService {
      * @return 곱셈 계산 결과가 맞으면 true, 아니면 false
      */
     boolean checkAttempt(MultiplicationResultAttempt resultAttempt);
+
+    /**
+     * @return 닉네임에 해당하는 사용자의 최근 답안 5개
+     */
+    List<MultiplicationResultAttempt> getStatsForUser(String userAlias);
 }

@@ -5,6 +5,7 @@ import com.kimbob.multiplication.domain.MultiplicationResultAttempt;
 import com.kimbob.multiplication.domain.User;
 import com.kimbob.multiplication.repository.MultiplicationResultAttemptRepository;
 import com.kimbob.multiplication.repository.UserRepository;
+import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
@@ -12,6 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+
+import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
@@ -28,6 +32,8 @@ class MultiplicationServiceTest {
 
     @Autowired
     private MultiplicationService multiplicationService;
+    @Autowired
+    private UserRepository userRepository;
 
     @Test
     void createRandomMultiplicationTest() {
@@ -61,6 +67,22 @@ class MultiplicationServiceTest {
 
         assertThat(isCorrect).isFalse();
         verify(multiplicationResultAttemptRepository).save(attempt);
+    }
+
+    @Test
+    public void retrieveStatsTest() {
+        Multiplication multiplication = new Multiplication(50, 60);
+        User user = new User("John_doe");
+        MultiplicationResultAttempt attempt1 = new MultiplicationResultAttempt(user, multiplication, 3010, false);
+        MultiplicationResultAttempt attempt2 = new MultiplicationResultAttempt(user, multiplication, 3020, false);
+        MultiplicationResultAttempt attempt3 = new MultiplicationResultAttempt(user, multiplication, 3000, true);
+        List<MultiplicationResultAttempt> attempts = Lists.newArrayList(attempt1, attempt2, attempt3);
+        when(userRepository.findByAlias("John_doe")).thenReturn(Optional.empty());
+        when(multiplicationResultAttemptRepository.findTop5ByUserAliasOrderByIdDesc("John_doe")).thenReturn(attempts);
+
+        List<MultiplicationResultAttempt> latestAttemptsResult = multiplicationService.getStatsForUser("John_doe");
+
+        assertThat(latestAttemptsResult).isEqualTo(attempts);
     }
 
     @TestConfiguration
