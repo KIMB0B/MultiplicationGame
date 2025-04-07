@@ -72,5 +72,69 @@ classDiagram
 ```
 
 ### 2차 요구사항 (데이터베이스 연동)
-- [ ] 답안 제출 기록 저장
-- [ ] 최근 5개의 답안 제출 기록 확인 기능 추가
+- [x] 답안 제출 기록 저장
+- [x] 최근 5개의 답안 제출 기록 확인 기능 추가
+#### 클래스 다이어그램
+```mermaid
+classDiagram
+    class MultiplicationService {
+        <<interface>>
+        +createMultiplication() Multiplication
+        +checkAttempt(MultiplicationResultAttempt) boolean
+    }
+    
+    class MultiplicationServiceImpl {
+        -RandomGeneratorService randomGeneratorService
+        -MultiplicationResultAttemptRepository attemptRepository
+        -UserRepository userRepository
+        -MultiplicationRepository multiplicationRepository
+        +createMultiplication() Multiplication
+        +checkAttempt(MultiplicationResultAttempt) boolean
+        +getStatsForUser(String) List&lt;MultiplicationResultAttempt>
+    }
+    
+    class RandomGeneratorService {
+        <<interface>>
+        +generateRandomFactor() int
+    }
+    
+    class RandomGeneratorServiceImpl {
+        +MINIMUM_FACTOR: int
+        +MAXIMUM_FACTOR: int
+        +generateRandomFactor() int
+    }
+    
+    class MultiplicationController {
+        -MultiplicationService multiplicationService
+        +getRandomMultiplication() Multiplication
+    }
+    
+    class MultiplicationResultAttemptController {
+        -MultiplicationService multiplicationService
+        +postResult(MultiplicationResultAttempt)
+        +getStatistics(String)
+    }
+
+    class MultiplicationRepository {
+        <<interface>>
+    }
+
+    class MultiplicationResultAttemptRepository {
+        <<interface>>
+        +findTop5ByUserAliasOrderByIdDesc(String)
+    }
+
+    class UserRepository {
+        <<interface>>
+        +findByAlias(String)
+    }
+    
+    MultiplicationServiceImpl ..|> MultiplicationService
+    RandomGeneratorServiceImpl ..|> RandomGeneratorService
+    MultiplicationServiceImpl --> RandomGeneratorService
+    MultiplicationController --> MultiplicationService
+    MultiplicationResultAttemptController --> MultiplicationService
+    MultiplicationServiceImpl --> MultiplicationResultAttemptRepository
+    MultiplicationServiceImpl --> UserRepository
+    MultiplicationServiceImpl --> MultiplicationRepository
+```
